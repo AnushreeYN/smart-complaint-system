@@ -1,6 +1,6 @@
 # Smart Complaint & Incident Management System
 
-## 🚀 How to Start the Application
+##  How to Start the Application
 
 ### 1. Start the Backend
 Open a terminal in the `backend/` directory and run:
@@ -29,7 +29,7 @@ npm run dev -- --port 3000
 
 ---
 
-## 🔒 Permission & Access Control (RBAC)
+##  Permission & Access Control (RBAC)
 
 Yes, this is a **permission-based** system. We use JWT (JSON Web Tokens) to enforce the following roles:
 
@@ -46,7 +46,7 @@ While this is currently a single-instance system, it follows "multi-tenant" priv
 
 ---
 
-## 🛠 Tech Stack Recap
+##  Tech Stack Recap
 - **Backend**: FastAPI (Async), SQLAlchemy 2.0, JWT.
 - **Frontend**: React (Vite), Tailwind CSS, Lucide Icons.
 - **Real-time**: WebSockets for instant status updates.
