@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: complaint_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_SERVER=db
+      - REDIS_HOST=redis
+      - SUPER_ADMIN_EMAIL=anu@mail.com
+      - SUPER_ADMIN_PASSWORD=anu@123
+      - SUPER_ADMIN_FULL_NAME=anu
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    build: ./backend
+    command: celery -A app.worker.tasks.celery_app worker --loglevel=info
+    environment:
+      - POSTGRES_SERVER=db
+      - REDIS_HOST=redis
+      - SUPER_ADMIN_EMAIL=anu@mail.com
+      - SUPER_ADMIN_PASSWORD=anu@123
+      - SUPER_ADMIN_FULL_NAME=anu
+    depends_on:
+      - redis
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000/api/v1
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
